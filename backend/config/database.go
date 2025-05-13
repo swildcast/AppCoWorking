@@ -15,7 +15,7 @@ import (
 var DB *gorm.DB
 
 // Conexión a la base de datos y migraciones
-func ConnectDB() {
+func ConnectDatabase() {
 	// Construcción de la cadena de conexión desde variables de entorno
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -26,15 +26,15 @@ func ConnectDB() {
 	)
 
 	// Conectar con PostgreSQL
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Error al conectar a la base de datos:", err)
+		log.Fatal("Failed to connect to database:", err)
 	}
 
 	fmt.Println("Conexión exitosa a PostgreSQL")
 
 	// Migrar las tablas (solo crea las que no existan)
-	db.AutoMigrate(
+	database.AutoMigrate(
 		&models.Role{},
 		&models.User{},
 		&models.Space{},
@@ -46,7 +46,7 @@ func ConnectDB() {
 	fmt.Println("Migraciones aplicadas correctamente")
 
 	// Asignar la conexión global
-	DB = db
+	DB = database
 
 	// Insertar datos de prueba
 	SeedDatabase()
@@ -77,20 +77,20 @@ func SeedDatabase() {
 	// Crear espacios (actualizado con todos los campos requeridos)
 	spaces := []models.Space{
 		{
-			Nombre: "Sala de Reuniones A", 
-			Descripcion: "Sala equipada para 10 personas",
-			Capacidad: 10, 
+			Nombre:        "Sala de Reuniones A",
+			Descripcion:   "Sala equipada para 10 personas",
+			Capacidad:     10,
 			PrecioPorHora: 50.00,
-			Estado: "disponible",
-			Ubicacion: "Piso 1"
+			Estado:        "disponible",
+			Ubicacion:     "Piso 1",
 		},
 		{
-			Nombre: "Sala de Conferencias B",
-			Descripcion: "Amplio espacio para eventos",
-			Capacidad: 50,
+			Nombre:        "Sala de Conferencias B",
+			Descripcion:   "Amplio espacio para eventos",
+			Capacidad:     50,
 			PrecioPorHora: 120.00,
-			Estado: "disponible",
-			Ubicacion: "Piso 2"
+			Estado:        "disponible",
+			Ubicacion:     "Piso 2",
 		},
 	}
 	if result := DB.Create(&spaces); result.Error != nil {

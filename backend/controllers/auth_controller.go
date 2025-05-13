@@ -47,7 +47,10 @@ func Register(c *gin.Context) {
 	}
 
 	user.Password = string(hashedPassword)
-	config.DB.Create(&user)
+	if err := config.DB.Create(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al registrar usuario"})
+		return
+	}
 
 	// Crear log de actividad
 	CreateActivityLog(user.ID, "registro", "Usuario registrado")

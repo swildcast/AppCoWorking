@@ -24,7 +24,11 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	config.DB.Create(&user)
+	if err := config.DB.Create(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear usuario"})
+		return
+	}
+
 	c.JSON(http.StatusOK, user)
 }
 
@@ -56,13 +60,20 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	config.DB.Save(&user)
+	if err := config.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar usuario"})
+		return
+	}
+
 	c.JSON(http.StatusOK, user)
 }
 
 // Eliminar usuario
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
-	config.DB.Delete(&models.User{}, id)
+	if err := config.DB.Delete(&models.User{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al eliminar usuario"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "Usuario eliminado"})
 }

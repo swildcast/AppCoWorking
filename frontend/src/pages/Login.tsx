@@ -65,13 +65,32 @@ const Login: React.FC = () => {
       await login(email, password);
       history.push(from);
     } catch (error) {
-      setErrors({
-        ...errors,
+      setErrors((prevErrors) => ({
+        ...prevErrors,
         form: 'Credenciales incorrectas o error del servidor'
-      });
+      }));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const clearErrors = () => {
+    setErrors({
+      email: '',
+      password: '',
+      form: ''
+    });
+  };
+
+  // Clear errors on input change
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    clearErrors();
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    clearErrors();
   };
 
 
@@ -104,7 +123,7 @@ const Login: React.FC = () => {
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -124,7 +143,7 @@ const Login: React.FC = () => {
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Contraseña"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">{errors.password}</p>
